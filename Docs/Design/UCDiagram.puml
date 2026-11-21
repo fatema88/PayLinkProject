@@ -1,0 +1,112 @@
+
+@startuml
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor Customer
+actor Agent
+actor Admin
+actor "Support Employee" as Support
+
+actor Biller
+actor "Simulated Card Provider" as Card
+actor "SMS Provider" as SMS
+actor "Push Provider" as Push
+
+rectangle "PayLink System" {
+
+    ' Authentication
+    usecase "Register Account" as UC1
+    usecase "Login" as UC2
+
+    ' Customer Use Cases
+    usecase "View Wallet Balance\nand Transaction History" as UC3
+    usecase "Top Up Wallet" as UC4
+    usecase "View Billers and\nRequired Input Fields" as UC5
+    usecase "Run Bill Inquiry" as UC6
+    usecase "Pay Bill from Wallet" as UC7
+    usecase "Request Refund" as UC8
+
+    ' Agent Use Cases
+    usecase "Pay Bill on Behalf\nof Customer" as UC9
+    usecase "Confirm Agent Cash Deposit" as UC10
+    usecase "Credit Agent Commission" as UC26
+
+    ' Admin Use Cases
+    usecase "Upgrade Customer\nto Verified" as UC11
+    usecase "Manage Billers\nand Services" as UC12
+    usecase "Edit Fees and Limits" as UC13
+    usecase "View Daily Totals\n(including Commissions Paid)" as UC14
+
+    ' Support Use Cases
+    usecase "Search Payment and\nView Full History" as UC15
+    usecase "Block / Unblock Account" as UC16
+    usecase "Review Refund Requests" as UC17
+    usecase "View Reconciliation Report" as UC18
+
+    ' External System Interactions
+    usecase "Process Simulated Card Top Up" as UC19
+    usecase "Process Bill Payment" as UC20
+    usecase "Send SMS Notification" as UC21
+    usecase "Send Push Notification" as UC22
+    usecase "Process Bill Inquiry" as UC23
+    usecase "Receive Biller Callback" as UC24
+    usecase "Run Nightly Reconciliation" as UC25
+}
+
+' Customer Associations
+Customer -- UC1
+Customer -- UC2
+Customer -- UC3
+Customer -- UC4
+Customer -- UC5
+Customer -- UC6
+Customer -- UC7
+Customer -- UC8
+
+' Agent Associations
+Agent -- UC2
+Agent -- UC9
+Agent -- UC10
+
+' Admin Associations
+Admin -- UC2
+Admin -- UC11
+Admin -- UC12
+Admin -- UC13
+Admin -- UC14
+
+' Support Associations
+Support -- UC2
+Support -- UC15
+Support -- UC16
+Support -- UC17
+Support -- UC18
+Support -- UC25
+
+' External Actors
+Card -- UC19
+Biller -- UC20
+Biller -- UC23
+Biller -- UC24
+Biller -- UC25
+
+SMS -- UC21
+Push -- UC22
+
+' Top Up Alternatives
+UC19 -|> UC4
+UC10 -|> UC4
+
+' Include Relationships
+UC6 ..> UC23 : <<include>>
+UC7 ..> UC20 : <<include>>
+UC20 ..> UC21 : <<include>>
+UC20 ..> UC22 : <<include>>
+
+' Agent Commission
+UC26 ..> UC9 : <<extend>>
+
+@enduml
